@@ -1,4 +1,4 @@
-const CACHE_NAME = 'screen-geometry-v1';
+const CACHE_NAME = 'screen-geometry-v2';
 const FILES_TO_CACHE = [
   'index.html',
   'manifest.json',
