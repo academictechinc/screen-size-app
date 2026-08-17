@@ -689,8 +689,7 @@
   // Orientation starts matching whichever way the device is currently held,
   // so a phone in portrait starts on Portrait. No measurements are assumed —
   // all three fields start empty until you type a value.
-  const startsPortrait = window.matchMedia && window.matchMedia('(orientation: portrait)').matches;
-  state.orientation = startsPortrait ? 'portrait' : 'landscape';
+state.orientation = 'landscape';
   document.querySelectorAll('#orientation .tab').forEach(t => {
     t.classList.toggle('active', t.dataset.o === state.orientation);
   });
