@@ -1,0 +1,708 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<title>Screen Geometry — Display Size Calculator</title>
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#12141a">
+<link rel="icon" href="icon-192.png">
+<link rel="apple-touch-icon" href="icon-192.png">
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@500;600&display=swap');
+
+  :root{
+    --bg: #12141a;
+    --panel: #1a1d24;
+    --panel-2: #20242c;
+    --border: #2b303a;
+    --text: #eceef2;
+    --muted: #8992a3;
+    --accent: #4fd8c4;
+    --accent-soft: rgba(79,216,196,0.14);
+    --dim: #f2a93b;
+    --dim-soft: rgba(242,169,59,0.14);
+  }
+
+  *{ box-sizing: border-box; }
+
+  html,body{
+    margin:0;
+    padding:0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  body{
+    min-height:100vh;
+    display:flex;
+    justify-content:center;
+    padding: 28px 16px 48px;
+  }
+
+  .wrap{
+    width:100%;
+    max-width: 860px;
+  }
+
+  header{
+    margin-bottom: 22px;
+  }
+
+  .eyebrow{
+    font-family:'IBM Plex Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin: 0 0 8px;
+  }
+
+  h1{
+    font-family:'Space Grotesk', sans-serif;
+    font-weight: 700;
+    font-size: clamp(24px, 4vw, 32px);
+    margin: 0 0 6px;
+    letter-spacing: -0.01em;
+  }
+
+  .sub{
+    color: var(--muted);
+    font-size: 14px;
+    margin: 0;
+    max-width: 46ch;
+  }
+
+  .controls-row{
+    display:flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    align-items:center;
+    justify-content:space-between;
+    margin-bottom: 10px;
+  }
+
+  .controls-row:last-of-type{ margin-bottom: 20px; }
+
+  .tabs{
+    display:flex;
+    gap: 6px;
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 4px;
+  }
+
+  .tab{
+    display:flex;
+    align-items:center;
+    gap: 8px;
+    padding: 8px 12px;
+    border-radius: 8px;
+    border: none;
+    background: transparent;
+    color: var(--muted);
+    font-family: 'Inter', sans-serif;
+    font-weight: 600;
+    font-size: 13px;
+    cursor: pointer;
+    transition: background 0.2s ease, color 0.2s ease;
+    white-space: nowrap;
+  }
+
+  .tab .swatch{
+    border: 1.5px solid currentColor;
+    border-radius: 2px;
+    opacity: 0.9;
+    flex-shrink: 0;
+  }
+
+  .tab[data-r="1.7778"] .swatch{ width: 18px; height: 10.1px; }
+  .tab[data-r="1.6"] .swatch{ width: 16px; height: 10px; }
+  .tab[data-r="1.3333"] .swatch{ width: 14.6px; height: 11px; }
+  .tab[data-o="landscape"] .swatch{ width: 18px; height: 11px; }
+  .tab[data-o="portrait"] .swatch{ width: 11px; height: 18px; }
+
+  .tab.active{
+    background: var(--accent-soft);
+    color: var(--accent);
+  }
+
+  .unit-toggle{
+    display:flex;
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 4px;
+    gap: 4px;
+  }
+
+  .unit-btn{
+    padding: 8px 12px;
+    border-radius: 8px;
+    border: none;
+    background: transparent;
+    color: var(--muted);
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s ease, color 0.2s ease;
+    white-space: nowrap;
+  }
+
+  .unit-btn.active{
+    background: var(--dim-soft);
+    color: var(--dim);
+  }
+
+  main{
+    display:grid;
+    grid-template-columns: 1.15fr 1fr;
+    gap: 20px;
+  }
+
+  @media (max-width: 700px){
+    main{ grid-template-columns: 1fr; }
+    .fields-panel{ order: 1; }
+    .diagram-panel{ order: 2; min-height: auto; }
+  }
+
+  @media (max-width: 480px){
+    body{ padding: 20px 12px 40px; }
+    .controls-row{ flex-direction: column; align-items: stretch; }
+    .tabs, .unit-toggle{ width: 100%; }
+    .tabs .tab, .unit-toggle .unit-btn{
+      flex: 1;
+      justify-content: center;
+      padding: 12px 6px;
+      min-height: 44px;
+    }
+    .panel{ padding: 14px; }
+  }
+
+  .panel{
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 18px;
+  }
+
+  .diagram-panel{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    min-height: 300px;
+  }
+
+  svg{ width: 100%; height: auto; overflow: visible; }
+
+  .dim-line{ stroke: var(--dim); stroke-width: 1.5; }
+  .dim-tick{ stroke: var(--dim); stroke-width: 1.5; }
+  .dim-label{
+    fill: var(--dim);
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 14px;
+    font-weight: 600;
+  }
+  .diag-line{
+    stroke: var(--muted);
+    stroke-width: 1.3;
+    stroke-dasharray: 5 5;
+  }
+  .diag-label{
+    fill: var(--muted);
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 14px;
+    font-weight: 600;
+  }
+  .screen-rect{
+    fill: var(--accent-soft);
+    stroke: var(--accent);
+    stroke-width: 2;
+    rx: 4;
+  }
+
+  .screen-rect, .dim-line, .dim-tick, .diag-line{
+    transition: all 0.35s ease;
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    .screen-rect, .dim-line, .dim-tick, .diag-line{ transition: none; }
+  }
+
+  .fields{
+    display:flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+
+  .field{
+    display:flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .field label{
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+
+  .input-row{
+    display:flex;
+    align-items:center;
+    background: var(--panel-2);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    overflow: hidden;
+    transition: border-color 0.2s ease;
+  }
+
+  .input-row:focus-within{ border-color: var(--accent); }
+
+  .input-row input{
+    flex:1;
+    min-width: 0;
+    width: 0;
+    background: transparent;
+    border: none;
+    outline: none;
+    padding: 12px 8px 12px 12px;
+    color: var(--text);
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 16px;
+    font-weight: 600;
+  }
+
+  .input-row.ftin-row input:last-of-type{ padding-left: 4px; }
+
+  .input-row .suffix{
+    padding: 0 12px;
+    color: var(--muted);
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 12px;
+  }
+
+  .ftin-row{ display: none; }
+
+  .area-note{
+    margin-top: 4px;
+    padding-top: 14px;
+    border-top: 1px solid var(--border);
+    color: var(--muted);
+    font-size: 13px;
+    display:flex;
+    justify-content:space-between;
+  }
+
+  .area-note strong{
+    color: var(--text);
+    font-family: 'IBM Plex Mono', monospace;
+    font-weight: 600;
+  }
+
+  footer{
+    margin-top: 18px;
+    color: var(--muted);
+    font-size: 12px;
+    text-align:center;
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <p class="eyebrow">Screen Geometry</p>
+    <h1>Display Size Calculator</h1>
+    <p class="sub">Pick an aspect ratio and orientation, then enter any one measurement — the other two follow automatically.</p>
+  </header>
+
+  <div class="controls-row">
+    <div class="tabs" id="tabs">
+      <button class="tab active" data-r="1.7778"><span class="swatch"></span>16:9</button>
+      <button class="tab" data-r="1.6"><span class="swatch"></span>16:10</button>
+      <button class="tab" data-r="1.3333"><span class="swatch"></span>4:3</button>
+    </div>
+  </div>
+
+  <div class="controls-row">
+    <div class="tabs" id="orientation">
+      <button class="tab" data-o="landscape"><span class="swatch"></span>Landscape</button>
+      <button class="tab" data-o="portrait"><span class="swatch"></span>Portrait</button>
+    </div>
+    <div class="unit-toggle" id="units">
+      <button class="unit-btn active" data-u="in">in</button>
+      <button class="unit-btn" data-u="cm">cm</button>
+      <button class="unit-btn" data-u="ftin">ft, in</button>
+    </div>
+  </div>
+
+  <main>
+    <div class="panel diagram-panel">
+      <svg viewBox="0 0 480 340" xmlns="http://www.w3.org/2000/svg">
+        <rect id="screenRect" class="screen-rect" x="0" y="0" width="0" height="0"></rect>
+
+        <line id="widthLineL" class="dim-tick" x1="0" y1="0" x2="0" y2="0"></line>
+        <line id="widthLineR" class="dim-tick" x1="0" y1="0" x2="0" y2="0"></line>
+        <line id="widthLine" class="dim-line" x1="0" y1="0" x2="0" y2="0"></line>
+        <text id="widthLabel" class="dim-label" x="0" y="0" text-anchor="middle">Width</text>
+
+        <line id="heightLineT" class="dim-tick" x1="0" y1="0" x2="0" y2="0"></line>
+        <line id="heightLineB" class="dim-tick" x1="0" y1="0" x2="0" y2="0"></line>
+        <line id="heightLine" class="dim-line" x1="0" y1="0" x2="0" y2="0"></line>
+        <text id="heightLabel" class="dim-label" x="0" y="0" text-anchor="middle">Height</text>
+
+        <line id="diagLine" class="diag-line" x1="0" y1="0" x2="0" y2="0"></line>
+        <text id="diagLabel" class="diag-label" x="0" y="0" text-anchor="middle">Diagonal</text>
+      </svg>
+    </div>
+
+    <div class="panel fields-panel">
+      <div class="fields">
+
+        <div class="field" data-field="diagonal">
+          <label>Diagonal</label>
+          <div class="input-row simple-unit">
+            <input type="number" inputmode="decimal" step="0.01" class="simple-input">
+            <span class="suffix unit-suffix">in</span>
+          </div>
+          <div class="input-row ftin-row">
+            <input type="number" inputmode="decimal" step="1" class="ft-input" placeholder="0">
+            <span class="suffix">ft</span>
+            <input type="number" inputmode="decimal" step="0.1" class="inch-input" placeholder="0">
+            <span class="suffix">in</span>
+          </div>
+        </div>
+
+        <div class="field" data-field="width">
+          <label>Width</label>
+          <div class="input-row simple-unit">
+            <input type="number" inputmode="decimal" step="0.01" class="simple-input">
+            <span class="suffix unit-suffix">in</span>
+          </div>
+          <div class="input-row ftin-row">
+            <input type="number" inputmode="decimal" step="1" class="ft-input" placeholder="0">
+            <span class="suffix">ft</span>
+            <input type="number" inputmode="decimal" step="0.1" class="inch-input" placeholder="0">
+            <span class="suffix">in</span>
+          </div>
+        </div>
+
+        <div class="field" data-field="height">
+          <label>Height</label>
+          <div class="input-row simple-unit">
+            <input type="number" inputmode="decimal" step="0.01" class="simple-input">
+            <span class="suffix unit-suffix">in</span>
+          </div>
+          <div class="input-row ftin-row">
+            <input type="number" inputmode="decimal" step="1" class="ft-input" placeholder="0">
+            <span class="suffix">ft</span>
+            <input type="number" inputmode="decimal" step="0.1" class="inch-input" placeholder="0">
+            <span class="suffix">in</span>
+          </div>
+        </div>
+
+        <div class="area-note">
+          <span>Screen area</span>
+          <strong id="areaValue">—</strong>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <footer>Works offline once loaded · save this page or add it to your home screen for quick access</footer>
+</div>
+
+<script>
+  const IN_TO_CM = 2.54;
+
+  const state = {
+    ratio: 16/9,          // long side / short side, from the aspect tabs
+    orientation: 'landscape',
+    unit: 'in',
+    diagonalIn: null,
+    widthIn: null,
+    heightIn: null,
+    lastDriver: 'diagonal'
+  };
+
+  // --- Collect field elements generically ---
+  const fieldEls = {};
+  document.querySelectorAll('.field').forEach(div => {
+    const key = div.dataset.field;
+    fieldEls[key] = {
+      simpleRow: div.querySelector('.simple-unit'),
+      simple: div.querySelector('.simple-input'),
+      simpleSuffix: div.querySelector('.unit-suffix'),
+      ftRow: div.querySelector('.ftin-row'),
+      ft: div.querySelector('.ft-input'),
+      inch: div.querySelector('.inch-input')
+    };
+  });
+
+  const els = { area: document.getElementById('areaValue') };
+
+  const svgEls = {
+    rect: document.getElementById('screenRect'),
+    widthLine: document.getElementById('widthLine'),
+    widthLineL: document.getElementById('widthLineL'),
+    widthLineR: document.getElementById('widthLineR'),
+    widthLabel: document.getElementById('widthLabel'),
+    heightLine: document.getElementById('heightLine'),
+    heightLineT: document.getElementById('heightLineT'),
+    heightLineB: document.getElementById('heightLineB'),
+    heightLabel: document.getElementById('heightLabel'),
+    diagLine: document.getElementById('diagLine'),
+    diagLabel: document.getElementById('diagLabel')
+  };
+
+  function getEffectiveRatio(){
+    // width / height, accounting for orientation
+    return state.orientation === 'landscape' ? state.ratio : 1 / state.ratio;
+  }
+
+  function computeFromDiagonal(dIn, r){
+    const hIn = dIn / Math.sqrt(r*r + 1);
+    const wIn = hIn * r;
+    return { diagonalIn: dIn, widthIn: wIn, heightIn: hIn };
+  }
+  function computeFromWidth(wIn, r){
+    const hIn = wIn / r;
+    const dIn = Math.sqrt(wIn*wIn + hIn*hIn);
+    return { diagonalIn: dIn, widthIn: wIn, heightIn: hIn };
+  }
+  function computeFromHeight(hIn, r){
+    const wIn = hIn * r;
+    const dIn = Math.sqrt(wIn*wIn + hIn*hIn);
+    return { diagonalIn: dIn, widthIn: wIn, heightIn: hIn };
+  }
+
+  function fmt(n){ return Math.round(n * 100) / 100; }
+
+  function applyResult(result){
+    state.diagonalIn = result.diagonalIn;
+    state.widthIn = result.widthIn;
+    state.heightIn = result.heightIn;
+  }
+
+  function driveFrom(key, canonicalIn){
+    if (!isFinite(canonicalIn) || canonicalIn <= 0) return;
+    state.lastDriver = key;
+    const r = getEffectiveRatio();
+    let result;
+    if (key === 'diagonal') result = computeFromDiagonal(canonicalIn, r);
+    else if (key === 'width') result = computeFromWidth(canonicalIn, r);
+    else result = computeFromHeight(canonicalIn, r);
+    applyResult(result);
+    render(key);
+  }
+
+  function recomputeFromDriver(){
+    const r = getEffectiveRatio();
+    let result;
+    if (state.lastDriver === 'diagonal') result = computeFromDiagonal(state.diagonalIn, r);
+    else if (state.lastDriver === 'width') result = computeFromWidth(state.widthIn, r);
+    else result = computeFromHeight(state.heightIn, r);
+    applyResult(result);
+  }
+
+  // --- Field display ---
+
+  function setFieldDisplay(key, valueIn){
+    const fe = fieldEls[key];
+    if (valueIn == null){
+      fe.simple.value = '';
+      fe.ft.value = '';
+      fe.inch.value = '';
+      return;
+    }
+    if (state.unit === 'ftin'){
+      let ft = Math.floor(valueIn / 12);
+      let inch = Math.round((valueIn - ft*12) * 10) / 10;
+      if (inch >= 12){ inch -= 12; ft += 1; }
+      fe.ft.value = ft;
+      fe.inch.value = inch;
+    } else {
+      const factor = state.unit === 'in' ? 1 : IN_TO_CM;
+      fe.simple.value = fmt(valueIn * factor);
+    }
+  }
+
+  function renderArea(){
+    if (state.widthIn == null || state.heightIn == null){
+      els.area.textContent = '—';
+      return;
+    }
+    const areaIn = state.widthIn * state.heightIn;
+    let text;
+    if (state.unit === 'in') text = fmt(areaIn) + ' in\u00B2';
+    else if (state.unit === 'cm') text = fmt(areaIn * IN_TO_CM * IN_TO_CM) + ' cm\u00B2';
+    else text = fmt(areaIn / 144) + ' ft\u00B2';
+    els.area.textContent = text;
+  }
+
+  function renderDiagram(){
+    const r = getEffectiveRatio();
+    const maxW = 300, maxH = 200;
+    const scale = Math.min(maxW / r, maxH);
+    const rectW = r * scale;
+    const rectH = scale;
+
+    const cx = 240, cy = 155;
+    const x = cx - rectW/2;
+    const y = cy - rectH/2;
+
+    svgEls.rect.setAttribute('x', x);
+    svgEls.rect.setAttribute('y', y);
+    svgEls.rect.setAttribute('width', rectW);
+    svgEls.rect.setAttribute('height', rectH);
+
+    const wy = y - 34;
+    svgEls.widthLine.setAttribute('x1', x); svgEls.widthLine.setAttribute('y1', wy);
+    svgEls.widthLine.setAttribute('x2', x + rectW); svgEls.widthLine.setAttribute('y2', wy);
+    svgEls.widthLineL.setAttribute('x1', x); svgEls.widthLineL.setAttribute('y1', wy-6);
+    svgEls.widthLineL.setAttribute('x2', x); svgEls.widthLineL.setAttribute('y2', wy+6);
+    svgEls.widthLineR.setAttribute('x1', x+rectW); svgEls.widthLineR.setAttribute('y1', wy-6);
+    svgEls.widthLineR.setAttribute('x2', x+rectW); svgEls.widthLineR.setAttribute('y2', wy+6);
+    svgEls.widthLabel.setAttribute('x', x + rectW/2);
+    svgEls.widthLabel.setAttribute('y', wy - 10);
+    svgEls.widthLabel.textContent = labelWithValue('Width', state.widthIn);
+
+    const hx = x + rectW + 34;
+    svgEls.heightLine.setAttribute('x1', hx); svgEls.heightLine.setAttribute('y1', y);
+    svgEls.heightLine.setAttribute('x2', hx); svgEls.heightLine.setAttribute('y2', y + rectH);
+    svgEls.heightLineT.setAttribute('x1', hx-6); svgEls.heightLineT.setAttribute('y1', y);
+    svgEls.heightLineT.setAttribute('x2', hx+6); svgEls.heightLineT.setAttribute('y2', y);
+    svgEls.heightLineB.setAttribute('x1', hx-6); svgEls.heightLineB.setAttribute('y1', y+rectH);
+    svgEls.heightLineB.setAttribute('x2', hx+6); svgEls.heightLineB.setAttribute('y2', y+rectH);
+    svgEls.heightLabel.setAttribute('x', hx + 46);
+    svgEls.heightLabel.setAttribute('y', y + rectH/2 + 4);
+    svgEls.heightLabel.textContent = labelWithValue('Height', state.heightIn);
+
+    svgEls.diagLine.setAttribute('x1', x); svgEls.diagLine.setAttribute('y1', y + rectH);
+    svgEls.diagLine.setAttribute('x2', x + rectW); svgEls.diagLine.setAttribute('y2', y);
+    svgEls.diagLabel.setAttribute('x', x + rectW/2);
+    svgEls.diagLabel.setAttribute('y', y + rectH + 26);
+    svgEls.diagLabel.textContent = labelWithValue('Diagonal', state.diagonalIn);
+  }
+
+  function formatUnitValue(valueIn){
+    if (state.unit === 'ftin'){
+      let ft = Math.floor(valueIn / 12);
+      let inch = Math.round((valueIn - ft*12) * 10) / 10;
+      if (inch >= 12){ inch -= 12; ft += 1; }
+      return ft + "' " + inch + '"';
+    }
+    const factor = state.unit === 'in' ? 1 : IN_TO_CM;
+    return fmt(valueIn * factor) + ' ' + state.unit;
+  }
+
+  function labelWithValue(name, valueIn){
+    return valueIn == null ? name : name + ' ' + formatUnitValue(valueIn);
+  }
+
+  function hasAnyValue(){
+    return state.diagonalIn != null || state.widthIn != null || state.heightIn != null;
+  }
+
+  function render(exclude){
+    Object.keys(fieldEls).forEach(key => {
+      if (key === exclude) return;
+      setFieldDisplay(key, state[key + 'In']);
+    });
+    renderArea();
+    renderDiagram();
+  }
+
+  // --- Wire up field inputs ---
+
+  Object.keys(fieldEls).forEach(key => {
+    const fe = fieldEls[key];
+
+    fe.simple.addEventListener('input', () => {
+      const v = parseFloat(fe.simple.value);
+      if (!isFinite(v) || v <= 0) return;
+      const canonical = state.unit === 'cm' ? v / IN_TO_CM : v;
+      driveFrom(key, canonical);
+    });
+
+    const handleFtIn = () => {
+      const ft = parseFloat(fe.ft.value) || 0;
+      const inch = parseFloat(fe.inch.value) || 0;
+      driveFrom(key, ft * 12 + inch);
+    };
+    fe.ft.addEventListener('input', handleFtIn);
+    fe.inch.addEventListener('input', handleFtIn);
+  });
+
+  // --- Aspect ratio tabs ---
+  document.querySelectorAll('#tabs .tab').forEach(tab => {
+    tab.addEventListener('click', () => {
+      document.querySelectorAll('#tabs .tab').forEach(t => t.classList.remove('active'));
+      tab.classList.add('active');
+      state.ratio = parseFloat(tab.dataset.r);
+      if (hasAnyValue()) recomputeFromDriver();
+      render();
+    });
+  });
+
+  // --- Orientation tabs ---
+  document.querySelectorAll('#orientation .tab').forEach(tab => {
+    tab.addEventListener('click', () => {
+      document.querySelectorAll('#orientation .tab').forEach(t => t.classList.remove('active'));
+      tab.classList.add('active');
+      state.orientation = tab.dataset.o;
+      if (hasAnyValue()) recomputeFromDriver();
+      render();
+    });
+  });
+
+  // --- Unit toggle ---
+  document.querySelectorAll('.unit-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      if (btn.dataset.u === state.unit) return;
+      document.querySelectorAll('.unit-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      state.unit = btn.dataset.u;
+
+      Object.values(fieldEls).forEach(fe => {
+        if (state.unit === 'ftin'){
+          fe.simpleRow.style.display = 'none';
+          fe.ftRow.style.display = 'flex';
+        } else {
+          fe.simpleRow.style.display = 'flex';
+          fe.ftRow.style.display = 'none';
+          fe.simpleSuffix.textContent = state.unit;
+        }
+      });
+      render();
+    });
+  });
+
+  // --- Initial state ---
+  // Orientation starts matching whichever way the device is currently held,
+  // so a phone in portrait starts on Portrait. No measurements are assumed —
+  // all three fields start empty until you type a value.
+  const startsPortrait = window.matchMedia && window.matchMedia('(orientation: portrait)').matches;
+  state.orientation = startsPortrait ? 'portrait' : 'landscape';
+  document.querySelectorAll('#orientation .tab').forEach(t => {
+    t.classList.toggle('active', t.dataset.o === state.orientation);
+  });
+
+  render();
+
+  if ('serviceWorker' in navigator){
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('sw.js').catch(() => {});
+    });
+  }
+</script>
+
+</body>
+</html>
