@@ -10,7 +10,7 @@
 <link rel="apple-touch-icon" href="icon-192.png">
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@500;600&display=swap');
-
+ 
   :root{
     --bg: #12141a;
     --panel: #1a1d24;
@@ -23,9 +23,9 @@
     --dim: #f2a93b;
     --dim-soft: rgba(242,169,59,0.14);
   }
-
+ 
   *{ box-sizing: border-box; }
-
+ 
   html,body{
     margin:0;
     padding:0;
@@ -34,23 +34,23 @@
     font-family: 'Inter', system-ui, -apple-system, sans-serif;
     -webkit-tap-highlight-color: transparent;
   }
-
+ 
   body{
     min-height:100vh;
     display:flex;
     justify-content:center;
     padding: 28px 16px 48px;
   }
-
+ 
   .wrap{
     width:100%;
     max-width: 860px;
   }
-
+ 
   header{
     margin-bottom: 22px;
   }
-
+ 
   .eyebrow{
     font-family:'IBM Plex Mono', monospace;
     font-size: 11px;
@@ -59,7 +59,7 @@
     color: var(--accent);
     margin: 0 0 8px;
   }
-
+ 
   h1{
     font-family:'Space Grotesk', sans-serif;
     font-weight: 700;
@@ -67,14 +67,14 @@
     margin: 0 0 6px;
     letter-spacing: -0.01em;
   }
-
+ 
   .sub{
     color: var(--muted);
     font-size: 14px;
     margin: 0;
     max-width: 46ch;
   }
-
+ 
   .controls-row{
     display:flex;
     flex-wrap: wrap;
@@ -83,9 +83,42 @@
     justify-content:space-between;
     margin-bottom: 10px;
   }
-
+ 
   .controls-row:last-of-type{ margin-bottom: 20px; }
-
+ 
+  .hidden{ display: none !important; }
+ 
+  .mode-row{ margin-bottom: 16px; }
+ 
+  .pitch-table-wrap{ overflow-x: auto; margin-top: 16px; }
+  .pitch-table{ width: 100%; border-collapse: collapse; font-size: 13px; }
+  .pitch-table th{
+    text-align: left;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--muted);
+    font-weight: 600;
+    padding: 8px 10px;
+    border-bottom: 1px solid var(--border);
+    white-space: nowrap;
+  }
+  .pitch-table td{
+    padding: 9px 10px;
+    border-bottom: 1px solid var(--border);
+    font-family: 'IBM Plex Mono', monospace;
+    white-space: nowrap;
+  }
+  .pitch-table tr:last-child td{ border-bottom: none; }
+  .pitch-table tr.pitch-row{ cursor: pointer; transition: background 0.15s ease; }
+  .pitch-table tr.pitch-row:hover{ background: var(--panel-2); }
+  .pitch-table tr.pitch-row.active-row{ background: var(--accent-soft); }
+  .pitch-table td.pitch-val{ color: var(--text); font-weight: 600; }
+  .pitch-table td .table-sub{ display:block; font-size: 10px; color: var(--muted); margin-top: 1px; }
+  .pitch-table td.acuity-val{ color: var(--dim); }
+  .pitch-table td.comfort-val{ color: var(--accent); }
+ 
   .tabs{
     display:flex;
     gap: 6px;
@@ -94,7 +127,7 @@
     border-radius: 12px;
     padding: 4px;
   }
-
+ 
   .tab{
     display:flex;
     align-items:center;
@@ -111,25 +144,25 @@
     transition: background 0.2s ease, color 0.2s ease;
     white-space: nowrap;
   }
-
+ 
   .tab .swatch{
     border: 1.5px solid currentColor;
     border-radius: 2px;
     opacity: 0.9;
     flex-shrink: 0;
   }
-
+ 
   .tab[data-r="1.7778"] .swatch{ width: 18px; height: 10.1px; }
   .tab[data-r="1.6"] .swatch{ width: 16px; height: 10px; }
   .tab[data-r="1.3333"] .swatch{ width: 14.6px; height: 11px; }
   .tab[data-o="landscape"] .swatch{ width: 18px; height: 11px; }
   .tab[data-o="portrait"] .swatch{ width: 11px; height: 18px; }
-
+ 
   .tab.active{
     background: var(--accent-soft);
     color: var(--accent);
   }
-
+ 
   .unit-toggle{
     display:flex;
     background: var(--panel);
@@ -138,7 +171,7 @@
     padding: 4px;
     gap: 4px;
   }
-
+ 
   .unit-btn{
     padding: 8px 12px;
     border-radius: 8px;
@@ -152,24 +185,24 @@
     transition: background 0.2s ease, color 0.2s ease;
     white-space: nowrap;
   }
-
+ 
   .unit-btn.active{
     background: var(--dim-soft);
     color: var(--dim);
   }
-
+ 
   main{
     display:grid;
     grid-template-columns: 1.15fr 1fr;
     gap: 20px;
   }
-
+ 
   @media (max-width: 700px){
     main{ grid-template-columns: 1fr; }
     .fields-panel{ order: 1; }
     .diagram-panel{ order: 2; min-height: auto; }
   }
-
+ 
   @media (max-width: 480px){
     body{ padding: 20px 12px 40px; }
     .controls-row{ flex-direction: column; align-items: stretch; }
@@ -182,23 +215,23 @@
     }
     .panel{ padding: 14px; }
   }
-
+ 
   .panel{
     background: var(--panel);
     border: 1px solid var(--border);
     border-radius: 16px;
     padding: 18px;
   }
-
+ 
   .diagram-panel{
     display:flex;
     align-items:center;
     justify-content:center;
     min-height: 300px;
   }
-
+ 
   svg{ width: 100%; height: auto; overflow: visible; }
-
+ 
   .dim-line{ stroke: var(--dim); stroke-width: 1.5; }
   .dim-tick{ stroke: var(--dim); stroke-width: 1.5; }
   .dim-label{
@@ -224,27 +257,37 @@
     stroke-width: 2;
     rx: 4;
   }
-
+ 
   .screen-rect, .dim-line, .dim-tick, .diag-line{
     transition: all 0.35s ease;
   }
-
+ 
   @media (prefers-reduced-motion: reduce){
     .screen-rect, .dim-line, .dim-tick, .diag-line{ transition: none; }
   }
-
+ 
+  .ceil-line{ stroke: var(--text); stroke-width: 2; opacity: 0.6; }
+  .ceil-axis{ stroke: var(--muted); stroke-width: 1.5; opacity: 0.4; }
+  .ceil-drop-line{ stroke: var(--dim); stroke-width: 1.5; stroke-dasharray: 4 4; }
+  .ceil-tick{ stroke: var(--dim); stroke-width: 1.5; }
+  .ceil-label{ fill: var(--muted); font-family:'IBM Plex Mono', monospace; font-size: 11px; }
+  .rect-169{ fill: var(--accent-soft); stroke: var(--accent); stroke-width: 2; transition: all 0.3s ease; }
+  .rect-1610{ fill: none; stroke: var(--dim); stroke-width: 2; stroke-dasharray: 5 4; transition: all 0.3s ease; }
+  .ratio-tag-169{ fill: var(--accent); font-family:'IBM Plex Mono', monospace; font-size: 12px; font-weight: 600; }
+  .ratio-tag-1610{ fill: var(--dim); font-family:'IBM Plex Mono', monospace; font-size: 12px; font-weight: 600; }
+ 
   .fields{
     display:flex;
     flex-direction: column;
     gap: 14px;
   }
-
+ 
   .field{
     display:flex;
     flex-direction: column;
     gap: 6px;
   }
-
+ 
   .field label{
     font-family: 'IBM Plex Mono', monospace;
     font-size: 11px;
@@ -252,7 +295,7 @@
     text-transform: uppercase;
     color: var(--muted);
   }
-
+ 
   .input-row{
     display:flex;
     align-items:center;
@@ -262,9 +305,9 @@
     overflow: hidden;
     transition: border-color 0.2s ease;
   }
-
+ 
   .input-row:focus-within{ border-color: var(--accent); }
-
+ 
   .input-row input{
     flex:1;
     min-width: 0;
@@ -278,18 +321,18 @@
     font-size: 16px;
     font-weight: 600;
   }
-
+ 
   .input-row.ftin-row input:last-of-type{ padding-left: 4px; }
-
+ 
   .input-row .suffix{
     padding: 0 12px;
     color: var(--muted);
     font-family: 'IBM Plex Mono', monospace;
     font-size: 12px;
   }
-
+ 
   .ftin-row{ display: none; }
-
+ 
   .area-note{
     margin-top: 4px;
     padding-top: 14px;
@@ -299,13 +342,34 @@
     display:flex;
     justify-content:space-between;
   }
-
+ 
   .area-note strong{
     color: var(--text);
     font-family: 'IBM Plex Mono', monospace;
     font-weight: 600;
   }
-
+ 
+  .hint{ font-size: 12px; color: var(--muted); margin-top: 4px; }
+  .output-card{
+    margin-top: 4px; padding-top: 16px; border-top: 1px solid var(--border);
+    display:flex; flex-direction: column; gap: 14px;
+  }
+  .output-item .output-label{
+    font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 0.06em;
+    text-transform: uppercase; color: var(--muted); margin-bottom: 4px;
+  }
+  .output-item .output-value{
+    font-family: 'Space Grotesk', sans-serif; font-weight: 700; font-size: 22px;
+  }
+  .output-item.highlight .output-value{ color: var(--accent); }
+  .output-item.highlight-amber .output-value{ color: var(--dim); }
+  .output-item .output-sub{ font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: var(--muted); margin-top: 2px; }
+  .output-item.warn .output-value{ color: var(--dim); font-size: 15px; }
+ 
+  .ceiling-fields .field{ margin-bottom: 2px; }
+  .row-group{ display:flex; gap: 8px; }
+  .row-group .input-row{ flex: 1; }
+ 
   footer{
     margin-top: 18px;
     color: var(--muted);
@@ -316,13 +380,23 @@
 </head>
 <body>
 <div class="wrap">
-
+ 
   <header>
     <p class="eyebrow">Screen Geometry</p>
     <h1>Display Size Calculator</h1>
     <p class="sub">Pick an aspect ratio and orientation, then enter any one measurement — the other two follow automatically.</p>
   </header>
-
+ 
+  <div class="controls-row mode-row">
+    <div class="tabs" id="appModeTabs">
+      <button class="tab active" data-appmode="size">Screen Size</button>
+      <button class="tab" data-appmode="pitch">Pixel Pitch</button>
+      <button class="tab" data-appmode="ceiling">Ceiling Fit</button>
+    </div>
+  </div>
+ 
+  <section id="sizeSection">
+ 
   <div class="controls-row">
     <div class="tabs" id="tabs">
       <button class="tab active" data-r="1.7778"><span class="swatch"></span>16:9</button>
@@ -330,7 +404,7 @@
       <button class="tab" data-r="1.3333"><span class="swatch"></span>4:3</button>
     </div>
   </div>
-
+ 
   <div class="controls-row">
     <div class="tabs" id="orientation">
       <button class="tab" data-o="landscape"><span class="swatch"></span>Landscape</button>
@@ -338,34 +412,34 @@
     </div>
     <div class="unit-toggle" id="units">
       <button class="unit-btn active" data-u="in">in</button>
-      <button class="unit-btn" data-u="cm">cm</button>
       <button class="unit-btn" data-u="ftin">ft, in</button>
+      <button class="unit-btn" data-u="cm">cm</button>
     </div>
   </div>
-
+ 
   <main>
     <div class="panel diagram-panel">
       <svg viewBox="0 0 480 340" xmlns="http://www.w3.org/2000/svg">
         <rect id="screenRect" class="screen-rect" x="0" y="0" width="0" height="0"></rect>
-
+ 
         <line id="widthLineL" class="dim-tick" x1="0" y1="0" x2="0" y2="0"></line>
         <line id="widthLineR" class="dim-tick" x1="0" y1="0" x2="0" y2="0"></line>
         <line id="widthLine" class="dim-line" x1="0" y1="0" x2="0" y2="0"></line>
         <text id="widthLabel" class="dim-label" x="0" y="0" text-anchor="middle">Width</text>
-
+ 
         <line id="heightLineT" class="dim-tick" x1="0" y1="0" x2="0" y2="0"></line>
         <line id="heightLineB" class="dim-tick" x1="0" y1="0" x2="0" y2="0"></line>
         <line id="heightLine" class="dim-line" x1="0" y1="0" x2="0" y2="0"></line>
         <text id="heightLabel" class="dim-label" x="0" y="0" text-anchor="middle">Height</text>
-
+ 
         <line id="diagLine" class="diag-line" x1="0" y1="0" x2="0" y2="0"></line>
         <text id="diagLabel" class="diag-label" x="0" y="0" text-anchor="middle">Diagonal</text>
       </svg>
     </div>
-
+ 
     <div class="panel fields-panel">
       <div class="fields">
-
+ 
         <div class="field" data-field="diagonal">
           <label>Diagonal</label>
           <div class="input-row simple-unit">
@@ -379,7 +453,7 @@
             <span class="suffix">in</span>
           </div>
         </div>
-
+ 
         <div class="field" data-field="width">
           <label>Width</label>
           <div class="input-row simple-unit">
@@ -393,7 +467,7 @@
             <span class="suffix">in</span>
           </div>
         </div>
-
+ 
         <div class="field" data-field="height">
           <label>Height</label>
           <div class="input-row simple-unit">
@@ -407,7 +481,7 @@
             <span class="suffix">in</span>
           </div>
         </div>
-
+ 
         <div class="area-note">
           <span>Screen area</span>
           <strong id="areaValue">—</strong>
@@ -415,13 +489,175 @@
       </div>
     </div>
   </main>
-
+ 
+  </section>
+ 
+  <section id="pitchSection" class="hidden">
+    <main>
+      <div class="panel diagram-panel">
+        <svg viewBox="0 0 460 260" xmlns="http://www.w3.org/2000/svg">
+          <!-- Floor -->
+          <line class="ceil-line" x1="20" y1="210" x2="440" y2="210"></line>
+ 
+          <!-- Person pictogram, standing at x=60 -->
+          <circle cx="60" cy="146" r="9" fill="var(--text)" opacity="0.85"></circle>
+          <polygon points="49,210 71,210 65,160 55,160" fill="var(--text)" opacity="0.85"></polygon>
+          <text x="60" y="228" text-anchor="middle" class="ceil-label">YOU</text>
+ 
+          <!-- Display, standing at x=390 -->
+          <rect class="rect-169" x="340" y="118" width="100" height="56" rx="3"></rect>
+          <line x1="390" y1="174" x2="390" y2="210" stroke="var(--muted)" stroke-width="2" opacity="0.6"></line>
+          <text x="390" y="228" text-anchor="middle" class="ceil-label">DISPLAY</text>
+ 
+          <!-- Comfortable dimension: person (x=60) to midpoint (x=225), drawn lower/closer -->
+          <g id="comfortGroup">
+            <line x1="60" y1="200" x2="60" y2="95" stroke="var(--accent)" stroke-width="1" opacity="0.35"></line>
+            <line x1="225" y1="200" x2="225" y2="95" stroke="var(--accent)" stroke-width="1" opacity="0.35"></line>
+            <line x1="60" y1="95" x2="225" y2="95" stroke="var(--accent)" stroke-width="2"></line>
+            <line x1="60" y1="89" x2="60" y2="101" stroke="var(--accent)" stroke-width="2"></line>
+            <line x1="225" y1="89" x2="225" y2="101" stroke="var(--accent)" stroke-width="2"></line>
+            <text id="comfortDiagLabel" x="142" y="80" text-anchor="middle" fill="var(--accent)" font-family="'IBM Plex Mono', monospace" font-size="13" font-weight="600">Comfortable</text>
+          </g>
+ 
+          <!-- Acuity dimension: person (x=60) to display (x=390), drawn higher/outer -->
+          <g id="acuityGroup">
+            <line x1="60" y1="95" x2="60" y2="50" stroke="var(--dim)" stroke-width="1" opacity="0.35"></line>
+            <line x1="390" y1="118" x2="390" y2="50" stroke="var(--dim)" stroke-width="1" opacity="0.35"></line>
+            <line x1="60" y1="50" x2="390" y2="50" stroke="var(--dim)" stroke-width="2"></line>
+            <line x1="60" y1="44" x2="60" y2="56" stroke="var(--dim)" stroke-width="2"></line>
+            <line x1="390" y1="44" x2="390" y2="56" stroke="var(--dim)" stroke-width="2"></line>
+            <text id="acuityDiagLabel" x="225" y="38" text-anchor="middle" fill="var(--dim)" font-family="'IBM Plex Mono', monospace" font-size="13" font-weight="600">Visual acuity limit</text>
+          </g>
+        </svg>
+      </div>
+ 
+      <div class="panel fields-panel">
+        <div class="fields">
+          <div class="field">
+            <label>Pixel Pitch</label>
+            <div class="input-row">
+              <input type="number" inputmode="decimal" step="0.01" id="pitchInput" placeholder="e.g. 1.9">
+              <span class="suffix">mm</span>
+            </div>
+          </div>
+ 
+          <div class="output-card" style="margin-top:4px; padding-top:16px; border-top:1px solid var(--border); display:flex; flex-direction:column; gap:14px;">
+            <div class="output-item">
+              <div class="output-label" style="font-family:'IBM Plex Mono', monospace; font-size:11px; letter-spacing:0.06em; text-transform:uppercase; color:var(--muted); margin-bottom:4px;">Visual Acuity Distance</div>
+              <div class="output-value" id="acuityOut" style="font-family:'Space Grotesk', sans-serif; font-weight:700; font-size:22px; color:var(--dim);">—</div>
+              <div class="hint">Closest distance before individual pixels become visible.</div>
+            </div>
+            <div class="output-item">
+              <div class="output-label" style="font-family:'IBM Plex Mono', monospace; font-size:11px; letter-spacing:0.06em; text-transform:uppercase; color:var(--muted); margin-bottom:4px;">Average Comfortable Viewing Distance</div>
+              <div class="output-value" id="comfortOut" style="font-family:'Space Grotesk', sans-serif; font-weight:700; font-size:22px; color:var(--accent);">—</div>
+              <div class="hint">Recommended distance for relaxed, comfortable viewing.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+ 
+    <div class="panel pitch-table-wrap">
+      <table class="pitch-table">
+        <thead>
+          <tr>
+            <th>Pixel Pitch</th>
+            <th>Visual Acuity</th>
+            <th>Comfortable</th>
+          </tr>
+        </thead>
+        <tbody id="pitchTableBody"></tbody>
+      </table>
+    </div>
+  </section>
+ 
+  <section id="ceilingSection" class="hidden">
+    <main>
+      <div class="panel diagram-panel">
+        <svg id="ceilSvg" viewBox="0 0 380 400" xmlns="http://www.w3.org/2000/svg">
+          <line id="ceilLine" class="ceil-line" x1="30" y1="40" x2="350" y2="40"></line>
+          <text id="ceilLabel" class="ceil-label" x="30" y="28">CEILING —</text>
+ 
+          <line id="floorLine" class="ceil-line" x1="30" y1="340" x2="350" y2="340"></line>
+          <text id="floorLabel" class="ceil-label" x="30" y="358">FINISHED FLOOR — 0"</text>
+ 
+          <line id="dropLine" class="ceil-drop-line" x1="190" y1="40" x2="190" y2="40"></line>
+          <text id="dropLabel" class="ceil-label" x="200" y="0" text-anchor="start"></text>
+ 
+          <line id="bottomTick" class="ceil-tick" x1="30" y1="0" x2="350" y2="0" opacity="0"></line>
+          <text id="bottomLabel" class="ceil-label" x="30" y="0" text-anchor="start"></text>
+ 
+          <rect id="rect169" class="rect-169" x="0" y="0" width="0" height="0"></rect>
+          <rect id="rect1610" class="rect-1610" x="0" y="0" width="0" height="0"></rect>
+          <text id="tag169" class="ratio-tag-169" x="0" y="0" text-anchor="middle">16:9</text>
+          <text id="tag1610" class="ratio-tag-1610" x="0" y="0" text-anchor="middle">16:10</text>
+        </svg>
+      </div>
+ 
+      <div class="panel fields-panel">
+        <div class="fields ceiling-fields">
+          <div class="field">
+            <label>Ceiling Height</label>
+            <div class="row-group">
+              <div class="input-row">
+                <input type="number" inputmode="decimal" step="1" id="ceilFeetInput" placeholder="0">
+                <span class="suffix">ft</span>
+              </div>
+              <div class="input-row">
+                <input type="number" inputmode="decimal" step="0.1" id="ceilInchInput" placeholder="0">
+                <span class="suffix">in</span>
+              </div>
+            </div>
+          </div>
+ 
+          <div class="field">
+            <label>Drop from Ceiling to Top of Screen</label>
+            <div class="input-row">
+              <input type="number" inputmode="decimal" step="0.1" id="ceilDropInput" placeholder="e.g. 12">
+              <span class="suffix">in</span>
+            </div>
+          </div>
+ 
+          <div class="field">
+            <label>Bottom of Screen — AFF</label>
+            <div class="input-row">
+              <input type="number" inputmode="decimal" step="0.1" id="ceilBottomInput" value="40">
+              <span class="suffix">in</span>
+            </div>
+            <div class="hint">Defaults to 40in — adjust to whatever bottom height your install calls for.</div>
+          </div>
+ 
+          <div class="output-card">
+            <div class="output-item" id="ceilAvailItem">
+              <div class="output-label">Available Screen Height</div>
+              <div class="output-value" id="ceilAvail">—</div>
+              <div class="output-sub" id="ceilRangeSub"></div>
+            </div>
+ 
+            <div class="output-item highlight">
+              <div class="output-label">Max Size — 16:9</div>
+              <div class="output-value" id="ceil169Diag">—</div>
+              <div class="output-sub" id="ceil169Dim"></div>
+            </div>
+ 
+            <div class="output-item highlight-amber">
+              <div class="output-label">Max Size — 16:10</div>
+              <div class="output-value" id="ceil1610Diag">—</div>
+              <div class="output-sub" id="ceil1610Dim"></div>
+            </div>
+            <div class="hint">Round down to the nearest commercially available size (e.g. 55", 65", 75", 85", 98").</div>
+          </div>
+        </div>
+      </div>
+    </main>
+  </section>
+ 
   <footer>Works offline once loaded · save this page or add it to your home screen for quick access</footer>
 </div>
-
+ 
 <script>
   const IN_TO_CM = 2.54;
-
+ 
   const state = {
     ratio: 16/9,          // long side / short side, from the aspect tabs
     orientation: 'landscape',
@@ -431,10 +667,10 @@
     heightIn: null,
     lastDriver: 'diagonal'
   };
-
+ 
   // --- Collect field elements generically ---
   const fieldEls = {};
-  document.querySelectorAll('.field').forEach(div => {
+  document.querySelectorAll('#sizeSection .field').forEach(div => {
     const key = div.dataset.field;
     fieldEls[key] = {
       simpleRow: div.querySelector('.simple-unit'),
@@ -445,9 +681,9 @@
       inch: div.querySelector('.inch-input')
     };
   });
-
+ 
   const els = { area: document.getElementById('areaValue') };
-
+ 
   const svgEls = {
     rect: document.getElementById('screenRect'),
     widthLine: document.getElementById('widthLine'),
@@ -461,12 +697,12 @@
     diagLine: document.getElementById('diagLine'),
     diagLabel: document.getElementById('diagLabel')
   };
-
+ 
   function getEffectiveRatio(){
     // width / height, accounting for orientation
     return state.orientation === 'landscape' ? state.ratio : 1 / state.ratio;
   }
-
+ 
   function computeFromDiagonal(dIn, r){
     const hIn = dIn / Math.sqrt(r*r + 1);
     const wIn = hIn * r;
@@ -482,15 +718,15 @@
     const dIn = Math.sqrt(wIn*wIn + hIn*hIn);
     return { diagonalIn: dIn, widthIn: wIn, heightIn: hIn };
   }
-
+ 
   function fmt(n){ return Math.round(n * 100) / 100; }
-
+ 
   function applyResult(result){
     state.diagonalIn = result.diagonalIn;
     state.widthIn = result.widthIn;
     state.heightIn = result.heightIn;
   }
-
+ 
   function driveFrom(key, canonicalIn){
     if (!isFinite(canonicalIn) || canonicalIn <= 0) return;
     state.lastDriver = key;
@@ -502,7 +738,7 @@
     applyResult(result);
     render(key);
   }
-
+ 
   function recomputeFromDriver(){
     const r = getEffectiveRatio();
     let result;
@@ -511,9 +747,9 @@
     else result = computeFromHeight(state.heightIn, r);
     applyResult(result);
   }
-
+ 
   // --- Field display ---
-
+ 
   function setFieldDisplay(key, valueIn){
     const fe = fieldEls[key];
     if (valueIn == null){
@@ -533,7 +769,7 @@
       fe.simple.value = fmt(valueIn * factor);
     }
   }
-
+ 
   function renderArea(){
     if (state.widthIn == null || state.heightIn == null){
       els.area.textContent = '—';
@@ -546,23 +782,23 @@
     else text = fmt(areaIn / 144) + ' ft\u00B2';
     els.area.textContent = text;
   }
-
+ 
   function renderDiagram(){
     const r = getEffectiveRatio();
     const maxW = 300, maxH = 200;
     const scale = Math.min(maxW / r, maxH);
     const rectW = r * scale;
     const rectH = scale;
-
-    const cx = 240, cy = 155;
+ 
+    const cx = 180, cy = 155;
     const x = cx - rectW/2;
     const y = cy - rectH/2;
-
+ 
     svgEls.rect.setAttribute('x', x);
     svgEls.rect.setAttribute('y', y);
     svgEls.rect.setAttribute('width', rectW);
     svgEls.rect.setAttribute('height', rectH);
-
+ 
     const wy = y - 34;
     svgEls.widthLine.setAttribute('x1', x); svgEls.widthLine.setAttribute('y1', wy);
     svgEls.widthLine.setAttribute('x2', x + rectW); svgEls.widthLine.setAttribute('y2', wy);
@@ -573,7 +809,7 @@
     svgEls.widthLabel.setAttribute('x', x + rectW/2);
     svgEls.widthLabel.setAttribute('y', wy - 10);
     svgEls.widthLabel.textContent = labelWithValue('Width', state.widthIn);
-
+ 
     const hx = x + rectW + 34;
     svgEls.heightLine.setAttribute('x1', hx); svgEls.heightLine.setAttribute('y1', y);
     svgEls.heightLine.setAttribute('x2', hx); svgEls.heightLine.setAttribute('y2', y + rectH);
@@ -584,14 +820,14 @@
     svgEls.heightLabel.setAttribute('x', hx + 46);
     svgEls.heightLabel.setAttribute('y', y + rectH/2 + 4);
     svgEls.heightLabel.textContent = labelWithValue('Height', state.heightIn);
-
+ 
     svgEls.diagLine.setAttribute('x1', x); svgEls.diagLine.setAttribute('y1', y + rectH);
     svgEls.diagLine.setAttribute('x2', x + rectW); svgEls.diagLine.setAttribute('y2', y);
     svgEls.diagLabel.setAttribute('x', x + rectW/2);
     svgEls.diagLabel.setAttribute('y', y + rectH + 26);
     svgEls.diagLabel.textContent = labelWithValue('Diagonal', state.diagonalIn);
   }
-
+ 
   function formatUnitValue(valueIn){
     if (state.unit === 'ftin'){
       let ft = Math.floor(valueIn / 12);
@@ -602,15 +838,15 @@
     const factor = state.unit === 'in' ? 1 : IN_TO_CM;
     return fmt(valueIn * factor) + ' ' + state.unit;
   }
-
+ 
   function labelWithValue(name, valueIn){
     return valueIn == null ? name : name + ' ' + formatUnitValue(valueIn);
   }
-
+ 
   function hasAnyValue(){
     return state.diagonalIn != null || state.widthIn != null || state.heightIn != null;
   }
-
+ 
   function render(exclude){
     Object.keys(fieldEls).forEach(key => {
       if (key === exclude) return;
@@ -619,19 +855,19 @@
     renderArea();
     renderDiagram();
   }
-
+ 
   // --- Wire up field inputs ---
-
+ 
   Object.keys(fieldEls).forEach(key => {
     const fe = fieldEls[key];
-
+ 
     fe.simple.addEventListener('input', () => {
       const v = parseFloat(fe.simple.value);
       if (!isFinite(v) || v <= 0) return;
       const canonical = state.unit === 'cm' ? v / IN_TO_CM : v;
       driveFrom(key, canonical);
     });
-
+ 
     const handleFtIn = () => {
       const ft = parseFloat(fe.ft.value) || 0;
       const inch = parseFloat(fe.inch.value) || 0;
@@ -640,7 +876,7 @@
     fe.ft.addEventListener('input', handleFtIn);
     fe.inch.addEventListener('input', handleFtIn);
   });
-
+ 
   // --- Aspect ratio tabs ---
   document.querySelectorAll('#tabs .tab').forEach(tab => {
     tab.addEventListener('click', () => {
@@ -651,7 +887,7 @@
       render();
     });
   });
-
+ 
   // --- Orientation tabs ---
   document.querySelectorAll('#orientation .tab').forEach(tab => {
     tab.addEventListener('click', () => {
@@ -662,7 +898,7 @@
       render();
     });
   });
-
+ 
   // --- Unit toggle ---
   document.querySelectorAll('.unit-btn').forEach(btn => {
     btn.addEventListener('click', () => {
@@ -670,7 +906,7 @@
       document.querySelectorAll('.unit-btn').forEach(b => b.classList.remove('active'));
       btn.classList.add('active');
       state.unit = btn.dataset.u;
-
+ 
       Object.values(fieldEls).forEach(fe => {
         if (state.unit === 'ftin'){
           fe.simpleRow.style.display = 'none';
@@ -684,24 +920,323 @@
       render();
     });
   });
-
+ 
   // --- Initial state ---
-  // Orientation starts matching whichever way the device is currently held,
-  // so a phone in portrait starts on Portrait. No measurements are assumed —
+  // Always start on Landscape. No measurements are assumed —
   // all three fields start empty until you type a value.
-state.orientation = 'landscape';
+  state.orientation = 'landscape';
   document.querySelectorAll('#orientation .tab').forEach(t => {
     t.classList.toggle('active', t.dataset.o === state.orientation);
   });
-
+ 
   render();
-
+ 
+  // ================= App-level mode switching (Screen Size / Pixel Pitch) =================
+ 
+  document.querySelectorAll('#appModeTabs .tab').forEach(tab => {
+    tab.addEventListener('click', () => {
+      document.querySelectorAll('#appModeTabs .tab').forEach(t => t.classList.remove('active'));
+      tab.classList.add('active');
+      const mode = tab.dataset.appmode;
+      document.getElementById('sizeSection').classList.toggle('hidden', mode !== 'size');
+      document.getElementById('pitchSection').classList.toggle('hidden', mode !== 'pitch');
+      document.getElementById('ceilingSection').classList.toggle('hidden', mode !== 'ceiling');
+    });
+  });
+ 
+  // ================= Pixel Pitch / Viewing Distance =================
+  // Standard visual-acuity formula: at 1 arc-minute of resolution (the
+  // limit of 20/20 vision), distance = pixel pitch / tan(1 arc-minute).
+  // Comfortable viewing distance is taken at double that angle (half the distance).
+ 
+  const ARC_MINUTE_RAD = (1/60) * (Math.PI/180);
+  const METERS_PER_MM_PITCH = (1/1000) / Math.tan(ARC_MINUTE_RAD);
+ 
+  const REFERENCE_PITCHES = [0.75,1.00,1.25,1.50,1.75,2.00,2.25,2.50,2.75,3.00,4.00,5.00,6.00,7.00,8.00,9.00,10.00];
+ 
+  function distancesForPitch(pitchMm){
+    const acuityM = pitchMm * METERS_PER_MM_PITCH;
+    const comfortM = acuityM / 2;
+    return { acuityM, comfortM };
+  }
+ 
+  function metersToFeetInches(m){
+    let totalInches = m * 39.3700787;
+    let feet = Math.floor(totalInches / 12);
+    let inches = Math.round(totalInches - feet * 12);
+    if (inches === 12){ inches = 0; feet += 1; }
+    return { feet, inches };
+  }
+ 
+  function formatDistance(m){
+    const { feet, inches } = metersToFeetInches(m);
+    return feet + 'ft ' + inches + 'in | ' + m.toFixed(2) + 'm';
+  }
+ 
+  function shortFeetInches(m){
+    const { feet, inches } = metersToFeetInches(m);
+    return feet + 'ft ' + inches + 'in';
+  }
+ 
+  function formatDistanceStacked(m){
+    const { feet, inches } = metersToFeetInches(m);
+    return feet + "ft " + inches + 'in<span class="table-sub">' + m.toFixed(2) + 'm</span>';
+  }
+ 
+  const pitchInput = document.getElementById('pitchInput');
+  const acuityOut = document.getElementById('acuityOut');
+  const comfortOut = document.getElementById('comfortOut');
+ 
+  function renderPitch(){
+    const v = parseFloat(pitchInput.value);
+    const valid = isFinite(v) && v > 0;
+ 
+    if (!valid){
+      acuityOut.textContent = '—';
+      comfortOut.textContent = '—';
+      updatePitchDiagram(null, null);
+      highlightTableRow(null);
+      return;
+    }
+ 
+    const { acuityM, comfortM } = distancesForPitch(v);
+    acuityOut.textContent = formatDistance(acuityM);
+    comfortOut.textContent = formatDistance(comfortM);
+    updatePitchDiagram(acuityM, comfortM);
+    highlightTableRow(v);
+  }
+ 
+  function updatePitchDiagram(acuityM, comfortM){
+    const acuityLabel = document.getElementById('acuityDiagLabel');
+    const comfortLabel = document.getElementById('comfortDiagLabel');
+    const acuityGroup = document.getElementById('acuityGroup');
+    const comfortGroup = document.getElementById('comfortGroup');
+ 
+    acuityLabel.textContent = acuityM != null ? 'Visual acuity — ' + shortFeetInches(acuityM) : 'Visual acuity limit';
+    comfortLabel.textContent = comfortM != null ? 'Comfortable — ' + shortFeetInches(comfortM) : 'Comfortable';
+ 
+    acuityGroup.style.opacity = acuityM != null ? 1 : 0.35;
+    comfortGroup.style.opacity = comfortM != null ? 1 : 0.35;
+  }
+ 
+  function highlightTableRow(pitchMm){
+    document.querySelectorAll('#pitchTableBody tr').forEach(row => {
+      row.classList.toggle('active-row', pitchMm != null && parseFloat(row.dataset.pitch) === pitchMm);
+    });
+  }
+ 
+  function buildPitchTable(){
+    const tbody = document.getElementById('pitchTableBody');
+    tbody.innerHTML = '';
+    REFERENCE_PITCHES.forEach(p => {
+      const { acuityM, comfortM } = distancesForPitch(p);
+      const tr = document.createElement('tr');
+      tr.className = 'pitch-row';
+      tr.dataset.pitch = p;
+      tr.innerHTML =
+        '<td class="pitch-val">' + p.toFixed(2) + 'mm</td>' +
+        '<td class="acuity-val">' + formatDistanceStacked(acuityM) + '</td>' +
+        '<td class="comfort-val">' + formatDistanceStacked(comfortM) + '</td>';
+      tr.addEventListener('click', () => {
+        pitchInput.value = p;
+        renderPitch();
+      });
+      tbody.appendChild(tr);
+    });
+  }
+ 
+  pitchInput.addEventListener('input', renderPitch);
+ 
+  buildPitchTable();
+  renderPitch();
+ 
+  // ================= CEILING FIT =================
+ 
+  const ceilEls = {
+    feet: document.getElementById('ceilFeetInput'),
+    inch: document.getElementById('ceilInchInput'),
+    drop: document.getElementById('ceilDropInput'),
+    bottom: document.getElementById('ceilBottomInput'),
+    avail: document.getElementById('ceilAvail'),
+    availItem: document.getElementById('ceilAvailItem'),
+    rangeSub: document.getElementById('ceilRangeSub'),
+    diag169: document.getElementById('ceil169Diag'),
+    dim169: document.getElementById('ceil169Dim'),
+    diag1610: document.getElementById('ceil1610Diag'),
+    dim1610: document.getElementById('ceil1610Dim')
+  };
+ 
+  [ceilEls.feet, ceilEls.inch, ceilEls.drop, ceilEls.bottom].forEach(el => {
+    el.addEventListener('input', renderCeiling);
+  });
+ 
+  function feetInchLabel(totalIn){
+    const feet = Math.floor(totalIn / 12);
+    const inches = Math.round((totalIn - feet * 12) * 10) / 10;
+    return feet + "' " + inches + '"';
+  }
+ 
+  function renderCeiling(){
+    const feet = parseFloat(ceilEls.feet.value) || 0;
+    const inch = parseFloat(ceilEls.inch.value) || 0;
+    const drop = parseFloat(ceilEls.drop.value);
+    const bottom = parseFloat(ceilEls.bottom.value);
+ 
+    const hasCeiling = ceilEls.feet.value !== '' || ceilEls.inch.value !== '';
+    const validDrop = ceilEls.drop.value !== '' && isFinite(drop);
+    const validBottom = ceilEls.bottom.value !== '' && isFinite(bottom);
+ 
+    const ceilingIn = feet * 12 + inch;
+ 
+    if (!hasCeiling || !validDrop || !validBottom){
+      ceilEls.avail.textContent = '—';
+      ceilEls.rangeSub.textContent = '';
+      ceilEls.diag169.textContent = '—';
+      ceilEls.dim169.textContent = '';
+      ceilEls.diag1610.textContent = '—';
+      ceilEls.dim1610.textContent = '';
+      updateCeilingDiagram(null, null, null, null);
+      return;
+    }
+ 
+    const topAFF = ceilingIn - drop;
+    const availableHeight = topAFF - bottom;
+ 
+    if (availableHeight <= 0){
+      ceilEls.avail.textContent = 'No room left';
+      ceilEls.rangeSub.textContent = 'Top of screen would sit at or below the bottom height — increase ceiling height or reduce the drop/bottom values.';
+      ceilEls.diag169.textContent = '—';
+      ceilEls.dim169.textContent = '';
+      ceilEls.diag1610.textContent = '—';
+      ceilEls.dim1610.textContent = '';
+      updateCeilingDiagram(ceilingIn, topAFF, bottom, null);
+      return;
+    }
+ 
+    ceilEls.avail.textContent = fmt(availableHeight) + '"';
+    ceilEls.rangeSub.textContent = 'Top of screen ' + fmt(topAFF) + '" AFF  ·  Bottom ' + fmt(bottom) + '" AFF';
+ 
+    const r169 = computeFromHeight(availableHeight, 16/9);
+    const r1610 = computeFromHeight(availableHeight, 16/10);
+ 
+    ceilEls.diag169.textContent = fmt(r169.diagonalIn) + '"';
+    ceilEls.dim169.textContent = fmt(r169.widthIn) + '" W × ' + fmt(availableHeight) + '" H';
+ 
+    ceilEls.diag1610.textContent = fmt(r1610.diagonalIn) + '"';
+    ceilEls.dim1610.textContent = fmt(r1610.widthIn) + '" W × ' + fmt(availableHeight) + '" H';
+ 
+    updateCeilingDiagram(ceilingIn, topAFF, bottom, availableHeight);
+  }
+ 
+  function updateCeilingDiagram(ceilingIn, topAFF, bottomAFF, availableHeight){
+    const floorY = 340, ceilY = 40;
+    const scaleBasis = (ceilingIn != null && ceilingIn > 0) ? ceilingIn : 144;
+    const scale = (floorY - ceilY) / scaleBasis;
+    const yFor = (v) => floorY - v * scale;
+ 
+    const haveTop = topAFF != null;
+    const haveBottom = bottomAFF != null;
+    const haveBoth = haveTop && haveBottom;
+    const haveScreen = availableHeight != null && availableHeight > 0;
+ 
+    // Render the screen at true aspect-ratio scale (same in/px scale as the
+    // vertical floor-to-ceiling axis), growing the canvas width as needed
+    // so wide/tall screens don't get squeezed into a fixed box.
+    const marginX = 20;
+    let vbWidth = 380;
+    if (haveScreen){
+      const width169Px = availableHeight * (16/9) * scale;
+      vbWidth = Math.max(380, width169Px + marginX * 4);
+    }
+    const cx = vbWidth / 2;
+ 
+    document.getElementById('ceilSvg').setAttribute('viewBox', '0 0 ' + vbWidth + ' 400');
+ 
+    const ceilLine = document.getElementById('ceilLine');
+    const floorLine = document.getElementById('floorLine');
+    const ceilLabel = document.getElementById('ceilLabel');
+    const floorLabel = document.getElementById('floorLabel');
+    ceilLine.setAttribute('x1', marginX); ceilLine.setAttribute('x2', vbWidth - marginX);
+    floorLine.setAttribute('x1', marginX); floorLine.setAttribute('x2', vbWidth - marginX);
+    ceilLabel.setAttribute('x', marginX);
+    floorLabel.setAttribute('x', marginX);
+    ceilLabel.textContent = ceilingIn != null ? 'CEILING — ' + feetInchLabel(ceilingIn) : 'CEILING —';
+ 
+    const dropLine = document.getElementById('dropLine');
+    const dropLabel = document.getElementById('dropLabel');
+    const bottomTick = document.getElementById('bottomTick');
+    const bottomLabel = document.getElementById('bottomLabel');
+    const rect169 = document.getElementById('rect169');
+    const rect1610 = document.getElementById('rect1610');
+    const tag169 = document.getElementById('tag169');
+    const tag1610 = document.getElementById('tag1610');
+ 
+    dropLine.setAttribute('x1', cx); dropLine.setAttribute('x2', cx);
+    bottomTick.setAttribute('x1', marginX); bottomTick.setAttribute('x2', vbWidth - marginX);
+    dropLabel.setAttribute('x', cx + 10);
+    bottomLabel.setAttribute('x', marginX);
+ 
+    if (haveTop){
+      const topY = yFor(topAFF);
+      dropLine.setAttribute('y1', ceilY);
+      dropLine.setAttribute('y2', topY);
+      dropLabel.setAttribute('y', (ceilY + topY) / 2 + 4);
+      dropLabel.textContent = 'Drop ' + fmt((ceilingIn - topAFF)) + '"';
+      dropLine.style.opacity = 1; dropLabel.style.opacity = 1;
+    } else {
+      dropLine.style.opacity = 0; dropLabel.style.opacity = 0;
+    }
+ 
+    if (haveBottom && bottomAFF <= scaleBasis){
+      const botY = yFor(bottomAFF);
+      bottomTick.setAttribute('y1', botY); bottomTick.setAttribute('y2', botY);
+      bottomLabel.setAttribute('y', botY + 16);
+      bottomLabel.textContent = 'Bottom of screen ' + fmt(bottomAFF) + '" AFF';
+      bottomTick.style.opacity = 1; bottomLabel.style.opacity = 1;
+    } else {
+      bottomTick.style.opacity = 0; bottomLabel.style.opacity = 0;
+    }
+ 
+    if (haveBoth && haveScreen){
+      const topY = yFor(topAFF);
+      const botY = yFor(bottomAFF);
+      const rectH = botY - topY;
+ 
+      const w169 = availableHeight * (16/9) * scale;
+      const w1610 = availableHeight * (16/10) * scale;
+ 
+      rect169.setAttribute('x', cx - w169/2);
+      rect169.setAttribute('y', topY);
+      rect169.setAttribute('width', w169);
+      rect169.setAttribute('height', rectH);
+ 
+      rect1610.setAttribute('x', cx - w1610/2);
+      rect1610.setAttribute('y', topY);
+      rect1610.setAttribute('width', w1610);
+      rect1610.setAttribute('height', rectH);
+ 
+      tag169.setAttribute('x', cx);
+      tag169.setAttribute('y', topY + 18);
+      tag1610.setAttribute('x', cx);
+      tag1610.setAttribute('y', botY - 26);
+ 
+      rect169.style.opacity = 1; rect1610.style.opacity = 1;
+      tag169.style.opacity = 1; tag1610.style.opacity = 1;
+    } else {
+      rect169.style.opacity = 0; rect1610.style.opacity = 0;
+      tag169.style.opacity = 0; tag1610.style.opacity = 0;
+    }
+  }
+ 
+  renderCeiling();
+ 
   if ('serviceWorker' in navigator){
     window.addEventListener('load', () => {
       navigator.serviceWorker.register('sw.js').catch(() => {});
     });
   }
 </script>
-
+ 
 </body>
 </html>
+ 
